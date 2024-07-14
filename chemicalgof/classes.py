@@ -1,7 +1,6 @@
 from .utils import DRAWER, GetPotAtomLinkers
-import networkx as nx, pandas as pd, numpy as np, re
+import networkx as nx, numpy as np, re
 from rdkit import Chem
-from rdkit.Chem import Draw
 from rdkit import RDLogger
 RDLogger.DisableLog('rdApp.*')
 
@@ -52,18 +51,6 @@ class FragNode:
 
     def setParent(self, parent):
         self.parent=parent
-    
-    def getImage(self):
-        mol = Chem.MolFromSmiles(self.smiles)
-        if mol.GetNumAtoms()==1:
-            a=mol.GetAtomWithIdx(0)
-            symb = a.GetSymbol()
-            a.SetAtomicNum(0)
-            a.SetProp("dummyLabel",symb)
-            a.SetNumExplicitHs(0)
-            a.UpdatePropertyCache()
-            
-        return DRAWER ( mol )
     
     @property
     def idx(self):
