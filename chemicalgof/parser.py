@@ -1,6 +1,6 @@
 import re
 from .tokens import Token, TokenPath
-from .utils import CanonizeMol, CanonizeFragWithDummies, prepareFragCanonization, GetPotAtomLinkers
+from .utils import GetPotAtomLinkers
 from rdkit import Chem
 import numpy as np
 
@@ -73,16 +73,16 @@ def String2Tokens(s):
 
             ## TODO
             ## canonicalize fragSMILES string to convert it to tokens and the directed graph    
-            if False:
-                molDumm=prepareFragCanonization(f)
-                smDumm=Chem.MolToSmiles(molDumm, canonize=False)
-                canDumm=Chem.CanonizeSmiles(smDumm)
-                if smDumm==canDumm:
-                    molCan, mapIdx = CanonizeFragWithDummies(molDumm)
-                    mapIdx[None]=None
-                    f=Chem.MolToSmiles(molCan)
-                    pre=mapIdx[pre]
-                    succ=mapIdx[succ]
+            # if False:
+            #     molDumm=prepareFragCanonization(f)
+            #     smDumm=Chem.MolToSmiles(molDumm, canonize=False)
+            #     canDumm=Chem.CanonizeSmiles(smDumm)
+            #     if smDumm==canDumm:
+            #         molCan, mapIdx = CanonizeFragWithDummies(molDumm)
+            #         mapIdx[None]=None
+            #         f=Chem.MolToSmiles(molCan)
+            #         pre=mapIdx[pre]
+            #         succ=mapIdx[succ]
 
             #frag=FragNode.fromSmiles( f )
             fragT=Token(f)

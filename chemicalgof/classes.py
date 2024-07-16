@@ -1,4 +1,4 @@
-from .utils import DRAWER, GetPotAtomLinkers
+from .utils import GetPotAtomLinkers
 import networkx as nx, numpy as np, re
 from rdkit import Chem
 from rdkit import RDLogger

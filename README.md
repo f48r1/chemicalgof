@@ -7,9 +7,9 @@
 
 ***Molecular Graph Reduction algorithm for fragSMILES notation***
 
-[Introduction](#introduction)
-[Installation](#installation)
-[How to use](#how-to-use)
+[Introduction](#introduction)\
+[Installation](#installation)\
+[How to use](#how-to-use)\
 [Reference](#reference)
 
 ---
@@ -39,7 +39,7 @@ The following instructions can be followed to install `chemicalgof` package from
     - **python user** traditional python user. Create your own virtual environment for python (and then activate it:
 
         ```shell
-        python -m venv gof
+        python -m venv .gof
         ```
 
         ```shell
@@ -67,7 +67,7 @@ The following instructions can be followed to install `chemicalgof` package from
 4. Install the package :
 
     ```shell
-    python install -m setup.py
+    python -m setup.py install
     ```
 
 Enjoy :)
