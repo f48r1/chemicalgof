@@ -145,7 +145,7 @@ class DiGraphFrags(nx.DiGraph):
         edges=list(self.edges)
         explHs={}
         stereoAtoms={ int(s[:-1])+cumAtom[n]:s[-1]  for n in self._node if n.suffStereo!=None 
-                         for s in re.findall("\d+[A-Z]{1}",n.suffStereo) }
+                         for s in re.findall(r"\d+[A-Z]{1}",n.suffStereo) }
         
         while edges:
             a,b = edges[0]
