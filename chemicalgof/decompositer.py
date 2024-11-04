@@ -10,13 +10,46 @@ RDLogger.DisableLog('rdApp.*')
 # default cleavage pattern. exocyclic single bonds but not beetween charged atoms 
 SINGLEXOCYCLICPATT = '[!$([+1,-1]~[-1,+1])]-&!@[*]'
 
-def Mol2GoF (mol:Chem.Mol, pattBonds:str = SINGLEXOCYCLICPATT, ) -> DiGraphFrags:
+def getOneSingleFragSmiles(mol):
+
+    ## TODO
+    ## Check if stereochemistry removal leads to different atom indexing
+    allChiralAtoms=dict(Chem.FindMolChiralCenters(mol, useLegacyImplementation=True ))
+    
+    Chem.RemoveStereochemistry(mol)
+    # clear dummy atoms, canonize mol fragment to map old idxs with new idxs
+    mol, order = CanonizeFragWithDummies(mol)
+
+    s = Chem.MolToSmiles(mol)
+
+    # initialize stereochemical suffix
+    suff=""
+    for a,RS in sorted(allChiralAtoms.items(), key=lambda x: x[0] ):
+        # if frag has only one atom for binding, suffix not include atom idx
+        if len(GetPotAtomLinkers(s))==1:
+            suff+=RS
+        # single fragment never includes linker atoms !
+        # elif a not in allAtomsInter:
+        else:
+            suff+=str(a)+RS
+    # if stereochemical is provided, suffix is added
+    if suff:
+        return s+"|"+suff
+    
+    return s
+
+def Mol2GoF (mol:Chem.Mol, pattBonds:str = SINGLEXOCYCLICPATT, ) -> DiGraphFrags | None:
     ## Providing canonical smiles and then canonical molecule representation
     mol = Chem.MolFromSmiles(Chem.MolToSmiles(mol))
 
     bondMatches = mol.GetSubstructMatches( Chem.MolFromSmarts(pattBonds) )
     if not bondMatches:
-        return None
+        s = getOneSingleFragSmiles(mol)
+
+        # define directed reduced graph
+        diG=DiGraphFrags()
+        diG.add_node(FragNode.fromSmiles(s))
+        return diG
 
     bondMatches = np.array(bondMatches)
 
@@ -87,7 +120,7 @@ def Mol2GoF (mol:Chem.Mol, pattBonds:str = SINGLEXOCYCLICPATT, ) -> DiGraphFrags
     ##
     # ad MV, che la strada mi illumina ..
     ##
-            
+
     # define actual nodes belonging to reduced graph.
     nodes=[FragNode.fromSmiles(x) for x in pureSmis]
 
@@ -110,5 +143,5 @@ def Mol2GoF (mol:Chem.Mol, pattBonds:str = SINGLEXOCYCLICPATT, ) -> DiGraphFrags
 
     return diG
 
-def Smiles2GoF (smiles:str, pattBonds:str = SINGLEXOCYCLICPATT, ) -> DiGraphFrags:
+def Smiles2GoF (smiles:str, pattBonds:str = SINGLEXOCYCLICPATT, ) -> DiGraphFrags | None:
     return Mol2GoF(Chem.MolFromSmiles(smiles), pattBonds)

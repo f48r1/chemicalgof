@@ -7,7 +7,7 @@ secure_random = random.SystemRandom()
 
 
 def findLongestPath(G, source=None, lenMax=-1):
-    terminalNodes = [node for node in G._node if G.degree[node]==1 and node!=source]
+    terminalNodes = [node for node in G._node if G.degree[node]==1 and node != source]
     # if the start of the path is not specified, all couples of terminal nodes are found
     if not source:
         terminalNodesCouple=[[(a,b),(b,a)] for a,b in itertools.combinations(terminalNodes,2)]
@@ -194,7 +194,14 @@ def sortBranches(G, paths):
 def CanonicalGoF2Tokens(mainDiG):
     mainG = mainDiG.to_undirected()
 
+    if mainDiG.number_of_nodes() == 1:
+        tokenP=TokenPath([node for node in mainDiG._node])
+        return tokenP
+
     longests=findLongestPath(mainG)
+    if (longests == None).all():
+        print('Latest BUG !!! SMARTS pattern doesn\'t recognize ciclyc structure and then graph is cyclic !' )
+        return None
         
     ## find index of first branching node for each path ##
     branchesIdxs=np.array([findFirstBranchIdx(mainG, p) for p in longests])
@@ -266,8 +273,16 @@ def CanonicalGoF2Tokens(mainDiG):
 def GoF2Tokens(mainDiG, nNodesMainPath=-1) :
     mainG = mainDiG.to_undirected()
 
+    if mainDiG.number_of_nodes() == 1:
+        tokenP=TokenPath([node for node in mainDiG._node])
+        return tokenP
+
     if nNodesMainPath==-1:
         longests=findLongestPath(mainG)
+
+    if (longests == None).all():
+        print('Latest BUG !!! SMARTS pattern doesn\'t recognize ciclyc structure and then graph is cyclic !' )
+        return None
 
     return buildBranches (mainDiG, mainG, secure_random.choice ( longests) )
 
@@ -275,11 +290,16 @@ def GoF2Tokens(mainDiG, nNodesMainPath=-1) :
 def GoF2MoreTokens(mainDiG, nAugs=5):
     mainG = mainDiG.to_undirected()
 
+    if mainDiG.number_of_nodes() == 1:
+        tokenP=TokenPath([node for node in mainDiG._node])
+        return [tokenP]
+
     rets=[]
     strings=[]
     lenMax=-1
     while len(strings)<nAugs:
         longests=findLongestPath(mainG, lenMax=lenMax)
+    
         if 1<=lenMax<3:
             break
         elif longests.size>0 and lenMax==-1:
