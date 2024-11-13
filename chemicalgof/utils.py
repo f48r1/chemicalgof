@@ -56,6 +56,7 @@ def CanonizeFragWithDummies(m1):
 #         iDum=editMol.AddAtom(atoma)
 #         editMol.AddBond(a, iDum, order=Chem.rdchem.BondType.SINGLE)
 #     return editMol.GetMol()
+
     #### AGGIUSTARE QUIUII PER IL READER DI FSMILES ####
     ### Sostanzialmente se qualcuno usa l'fSMILES senza partire dalla molecola puo scrivere i frammenti con uno smiles
     ## non canonizzato e di conseguenze tutti i legami numerati in base a quello SMILES non corrisponderebbero con lo smiles canonico. Per cui è necessario aggiungere i dummies dove dovrebbero essere e riseguire la normale canonzizazione che si fa anche nel processo inverso.

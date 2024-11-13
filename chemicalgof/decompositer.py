@@ -12,8 +12,6 @@ SINGLEXOCYCLICPATT = '[!$([+1,-1]~[-1,+1])]-&!@[*]'
 
 def getOneSingleFragSmiles(mol):
 
-    ## TODO
-    ## Check if stereochemistry removal leads to different atom indexing
     allChiralAtoms=dict(Chem.FindMolChiralCenters(mol, useLegacyImplementation=True ))
     
     Chem.RemoveStereochemistry(mol)

@@ -36,7 +36,7 @@ The following instructions can be followed to install `chemicalgof` package from
     ```
 
 2. (optional but suggested) create your own environment. If you are on a linux OS, python traditional software can be employed. Anaconda is suggested for oher OS like Windows or Mac. For sake of clarity, `gof` is just a customizable name in the following pieces of codes for your virtual environment, therefore you can choose a name by yourself.
-    - **python user** traditional python user. Create your own virtual environment for python (and then activate it:
+    - **python user** create your own virtual environment for python (and then activate it):
 
         ```shell
         python -m venv .gof
@@ -51,8 +51,6 @@ The following instructions can be followed to install `chemicalgof` package from
         ```shell
         conda create --name gof python=3.11
         ```
-
-        `gof` is just a customizable name for your environment, therefore you can choose a name by yourself
 
         ```shell
         conda activate gof
