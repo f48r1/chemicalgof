@@ -1,7 +1,7 @@
 ![python version](https://img.shields.io/badge/python-3.10_|_3.11-white)
 ![license](https://img.shields.io/badge/license-MIT-orange)
 [![Static Badge](https://img.shields.io/badge/ChemRxiv-10.26434/chemrxiv--2024-tm7n6)](https://doi.org/10.26434/chemrxiv-2024-tm7n6)
-[![Static Badge](https://img.shields.io/badge/Data%20Zenodo-_10.5281/12713950-blue)](https://doi.org/10.5281/zenodo.12713950)
+[![Static Badge](https://img.shields.io/badge/Data%20Zenodo-_10.5281/12700298-blue)](https://doi.org/10.5281/zenodo.12700298)
 
 # Graph of Frags - GoF tool repository
 
@@ -100,29 +100,52 @@ T=CanonicalGoF2Tokens(DiG)
 
 ```python
 ### then get sequence of tokens for fragments and bonds
-print(*T.getSequence())
+fragsmi = T.getSequence()
 
 ## or simply each fragment and its bonds splitted by dots
-print(*T.getString())
+fragsmi = T.getString()
+
+print(fragsmi)
+```
+
+Then, to parse a fragSMILES representation, if valid, and convert it into a molecule
+
+```python
+from chemicalgof import String2Tokens
+### get tokens from string represetantion
+T = String2Tokens(fragsmi)
+
+## convert it into GoF
+DiG = T.getGraph()
+
+# into mol
+mol = DiG.getMol()
+
+# and finally SMILES
+print(Chem.MolToSmiles(mol))
 ```
 
 ---
 
 ## Reference
 
-GoF tool was first presented on the preprint paper [here](https://doi.org/10.26434/chemrxiv-2024-tm7n6)
-The resulting fragSMILES notation was used for de novo drug design approaches and compared with traditional notations such as SMILES and SELFIES.
+GoF tool was first presented on the preprint paper [here](https://doi.org/10.26434/chemrxiv-2024-tm7n6) and on the actual paper [here](https://www.nature.com/articles/s42004-025-01423-3).
+The resulting fragSMILES notation was used for de novo drug design approaches and compared with traditional notations such as SMILES, SELFIES and t-SMILES.
 
 If you think that GoF can be usefull for your project, please cite us :)
 
 ```bibtex
-@article{Mastrolorito_2024, 
-title={fragSMILES: a Chemical String Notation for Advanced Fragment and Chirality Representation}, 
-url={http://dx.doi.org/10.26434/chemrxiv-2024-tm7n6}, 
-DOI={10.26434/chemrxiv-2024-tm7n6}, 
-publisher={American Chemical Society (ACS)}, 
-author={Mastrolorito, Fabrizio and Ciriaco, Fulvio and Togo, Maria Vittoria and Gambacorta, Nicola and Trisciuzzi, Daniela and Altomare, Cosimo Damiano and Amoroso, Nicola and Grisoni, Francesca and Nicolotti, Orazio}, 
-year={2024}, 
-month=jul 
+@article{mastrolorito_fragsmiles_2025,
+title = {{fragSMILES} as a chemical string notation for advanced fragment and chirality representation},
+volume = {8},
+issn = {2399-3669},
+url = {https://doi.org/10.1038/s42004-025-01423-3},
+doi = {10.1038/s42004-025-01423-3},
+number = {1},
+journal = {Communications Chemistry},
+author = {Mastrolorito, Fabrizio and Ciriaco, Fulvio and Togo, Maria Vittoria and Gambacorta, Nicola and Trisciuzzi, Daniela and Altomare, Cosimo Damiano and Amoroso, Nicola and Grisoni, Francesca and Nicolotti, Orazio},
+month = jan,
+year = {2025},
+pages = {26},
 }
 ```
