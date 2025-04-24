@@ -1,5 +1,7 @@
 from rdkit import Chem
 
+# [ ] something to do here ?
+
 def GetPotAtomLinkers(s):
     if "|" in s: # if fragment has chirality
         s, *_=s.split("|")
@@ -44,22 +46,5 @@ def CanonizeFragWithDummies(m1):
         return m4, retMap
     
     return m3, tmp
-
-## TODO
-## canonize string of fragSMILES to convert it to the tokens and then directed graph
-# def prepareFragCanonization(smi, dummiesIdxs: list):
-#     editMol=Chem.EditableMol( Chem.MolFromSmiles(smi) )
-    
-#     for a in dummiesIdxs:
-#         atoma = Chem.Atom(0)
-#         atoma.SetNoImplicit(True)
-#         iDum=editMol.AddAtom(atoma)
-#         editMol.AddBond(a, iDum, order=Chem.rdchem.BondType.SINGLE)
-#     return editMol.GetMol()
-
-    #### AGGIUSTARE QUIUII PER IL READER DI FSMILES ####
-    ### Sostanzialmente se qualcuno usa l'fSMILES senza partire dalla molecola puo scrivere i frammenti con uno smiles
-    ## non canonizzato e di conseguenze tutti i legami numerati in base a quello SMILES non corrisponderebbero con lo smiles canonico. Per cui è necessario aggiungere i dummies dove dovrebbero essere e riseguire la normale canonzizazione che si fa anche nel processo inverso.
-    # return CanonizeFragWithDummies ( editMol.GetMol())
 
 

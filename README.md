@@ -3,9 +3,11 @@
 [![Static Badge](https://img.shields.io/badge/ChemRxiv-10.26434/chemrxiv--2024-tm7n6)](https://doi.org/10.26434/chemrxiv-2024-tm7n6)
 [![Static Badge](https://img.shields.io/badge/Data%20Zenodo-_10.5281/12700298-blue)](https://doi.org/10.5281/zenodo.12700298)
 
+> **_NOTE:_**  This package has been refactored and the current version is 0.2.0; Many functions and command series were changed. Deprecated warnings are not implemented yet.
+
 # Graph of Frags - GoF tool repository
 
-***Molecular Graph Reduction algorithm for fragSMILES notation***
+**_Molecular Graph Reduction algorithm for fragSMILES notation_**
 
 [Introduction](#introduction)\
 [Installation](#installation)\
@@ -39,11 +41,11 @@ The following instructions can be followed to install `chemicalgof` package from
     - **python user** create your own virtual environment for python (and then activate it):
 
         ```shell
-        python -m venv .gof
+        python -m venv .venv
         ```
 
         ```shell
-        source .gof/bin/activate
+        source .venv/bin/activate
         ```
 
     - **conda user** create your own environment for conda (and then activate it):
@@ -75,55 +77,29 @@ Enjoy :)
 ## How to use
 
 ```python
-from chemicalgof import Smiles2GoF
+from chemicalgof import encode
 
 ## Example SMILES string of a molecule
 smiles = 'C[C@@](O)(Cl)C(=O)NC[C@@H]1CC[C@H](C(=O)O)O1' ## molecule provides chirality information
 
-## Convert SMILES to directed graph !
-DiG = Smiles2GoF(smiles)
-```
+## Convert SMILES to relative fragSMILES !
+fragsmiles = encode(smiles)
 
-Now we need a tokenizer traversing graph to tokenize nodes and edges
-
-```python
-from chemicalgof import GoF2Tokens
-T=GoF2Tokens(DiG)
-```
-
-if you prefer, canonizalied graph can be obtained
-
-```python
-from chemicalgof import CanonicalGoF2Tokens
-T=CanonicalGoF2Tokens(DiG)
-```
-
-```python
-### then get sequence of tokens for fragments and bonds
-fragsmi = T.getSequence()
-
-## or simply each fragment and its bonds splitted by dots
-fragsmi = T.getString()
-
-print(fragsmi)
+print(fragsmiles)
 ```
 
 Then, to parse a fragSMILES representation, if valid, and convert it into a molecule
 
 ```python
-from chemicalgof import String2Tokens
-### get tokens from string represetantion
-T = String2Tokens(fragsmi)
+from chemicalgof import decode
 
-## convert it into GoF
-DiG = T.getGraph()
-
-# into mol
-mol = DiG.getMol()
+ret_smiles = decode(fragsmiles)
 
 # and finally SMILES
-print(Chem.MolToSmiles(mol))
+print(ret_smiles)
 ```
+
+Additional detailed examples on how to encode smiles/molecules into fragsmiles are available in [notebook folder](./notebooks/).
 
 ---
 
