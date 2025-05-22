@@ -74,10 +74,12 @@ a. Install from setup.py after cloning repository
 
 b. Install package by pip command
 
-    ```shell
-    pip install git+https://github.com/f48r1/chemicalgof.git
-    
-    ```
+    1. use easy pip command to install package:
+
+        ```shell
+        pip install git+https://github.com/f48r1/chemicalgof.git
+        
+        ```
 
 Enjoy :)
 
