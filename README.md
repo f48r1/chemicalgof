@@ -30,14 +30,9 @@ To do this, you need python interpreter ... and of course your molecules :)
 `chemicalgof` package reequires few python dependencies. It has been tested through Python>=3.10. You can find requirements.txt for dependencies packages.
 
 The following instructions can be followed to install `chemicalgof` package from our repository:
-
-1. Clone the repository in a comfortable path, for instance `~/`:
-
-    ```shell
-    git clone https://github.com/f48r1/chemicalgof.git
     ```
 
-2. (optional but suggested) create your own environment. If you are on a linux OS, python traditional software can be employed. Anaconda is suggested for oher OS like Windows or Mac. For sake of clarity, `gof` is just a customizable name in the following pieces of codes for your virtual environment, therefore you can choose a name by yourself.
+1. (optional but suggested) create your own environment. If you are on a linux OS, python traditional software can be employed. Anaconda is suggested for oher OS like Windows or Mac. For sake of clarity, `gof` is just a customizable name in the following pieces of codes for your virtual environment, therefore you can choose a name by yourself.
     - **python user** create your own virtual environment for python (and then activate it):
 
         ```shell
@@ -58,16 +53,30 @@ The following instructions can be followed to install `chemicalgof` package from
         conda activate gof
         ```
 
-3. Navigate to the cloned directory:
+a. Install from setup.py after cloning repository
+
+   1. Clone the repository in a comfortable path, for instance `~/`:
+
+       ```shell
+       git clone https://github.com/f48r1/chemicalgof.git
+
+   2. Navigate to the cloned directory:
+
+       ```shell
+       cd chemicalgof/
+       ```
+
+   3. Install the package :
+
+       ```shell
+       python -m setup.py install
+       ```
+
+b. Install package by pip command
 
     ```shell
-    cd chemicalgof/
-    ```
-
-4. Install the package :
-
-    ```shell
-    python -m setup.py install
+    pip install git+https://github.com/f48r1/chemicalgof.git
+    
     ```
 
 Enjoy :)
@@ -82,7 +91,7 @@ from chemicalgof import encode
 ## Example SMILES string of a molecule
 smiles = 'C[C@@](O)(Cl)C(=O)NC[C@@H]1CC[C@H](C(=O)O)O1' ## molecule provides chirality information
 
-## Convert SMILES to relative fragSMILES !
+## Convert SMILES into relative fragSMILES !
 fragsmiles = encode(smiles)
 
 print(fragsmiles)
