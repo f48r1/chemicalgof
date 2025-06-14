@@ -25,65 +25,65 @@ To do this, you need python interpreter ... and of course your molecules :)
 
 ---
 
-## Installation
+## 🔧 Installation
 
-`chemicalgof` package reequires few python dependencies. It has been tested through Python>=3.10. You can find requirements.txt for dependencies packages.
+### 1. (Optional but recommended) Create a virtual environment
 
-The following instructions can be followed to install `chemicalgof` package from our repository:
-    ```
+Using a virtual environment is good practice to isolate dependencies.  
+You can use either standard Python tools or Conda, depending on your operating system.
 
-1. (optional but suggested) create your own environment. If you are on a linux OS, python traditional software can be employed. Anaconda is suggested for oher OS like Windows or Mac. For sake of clarity, `gof` is just a customizable name in the following pieces of codes for your virtual environment, therefore you can choose a name by yourself.
-    - **python user** create your own virtual environment for python (and then activate it):
+- **For Linux users**: the native Python environment is usually sufficient.  
+- **For Windows and macOS users**: we recommend using [Anaconda](https://www.anaconda.com/) for better compatibility.
 
-        ```shell
-        python -m venv .venv
-        ```
 
-        ```shell
-        source .venv/bin/activate
-        ```
+#### 🔹 Using Python `venv`
 
-    - **conda user** create your own environment for conda (and then activate it):
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
 
-        ```shell
-        conda create --name gof python=3.11
-        ```
+#### 🔹 Using Conda
 
-        ```shell
-        conda activate gof
-        ```
+> ⚠️ In the examples below, `gof` is just a placeholder name for your environment—you can choose any name.
 
-a. Install from setup.py after cloning repository
-
-   1. Clone the repository in a comfortable path, for instance `~/`:
-
-       ```shell
-       git clone https://github.com/f48r1/chemicalgof.git
-
-   2. Navigate to the cloned directory:
-
-       ```shell
-       cd chemicalgof/
-       ```
-
-   3. Install the package :
-
-       ```shell
-       python -m setup.py install
-       ```
-
-b. Install package by pip command
-
-    1. use easy pip command to install package:
-
-        ```shell
-        pip install git+https://github.com/f48r1/chemicalgof.git
-        
-        ```
-
-Enjoy :)
+```bash
+conda create --name gof python=3.11
+conda activate gof
+```
 
 ---
+
+### 2a. 🔨 Install from source using `setup.py`
+
+1. Clone the repository to a desired directory (e.g., your home folder):
+
+   ```bash
+   git clone https://github.com/f48r1/chemicalgof.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd chemicalgof/
+   ```
+
+3. Install the package locally:
+
+   ```bash
+   python setup.py install
+   ```
+
+---
+
+### 2b. 📦 Install directly via `pip`
+
+If you prefer a simpler installation, you can install the package directly from GitHub:
+
+```bash
+pip install git+https://github.com/f48r1/chemicalgof.git
+```
+
 
 ## How to use
 

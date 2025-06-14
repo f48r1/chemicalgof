@@ -163,3 +163,4 @@ cython_debug/
 
 # Customize ignored files
 bkp/
+*.workspace
