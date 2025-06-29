@@ -1,3 +1,10 @@
+<h1 align="center">  Graph of Frags - chemicalGoF tool repository </h1>
+<h4 align="center">  Molecular Graph Reduction algorithm for fragSMILES notation </h1>
+
+<div align="center">
+    <img src="./data/intro_chemicalgof.svg" width="100%">
+</div>
+
 ![python version](https://img.shields.io/badge/python-3.10_|_3.11-white)
 ![license](https://img.shields.io/badge/license-MIT-orange)
 [![Static Badge](https://img.shields.io/badge/ChemRxiv-10.26434/chemrxiv--2024-tm7n6)](https://doi.org/10.26434/chemrxiv-2024-tm7n6)
@@ -5,9 +12,7 @@
 
 > **_NOTE:_**  This package has been refactored and the current version is 0.2.0; Many functions and command series were changed. Deprecated warnings are not implemented yet.
 
-# Graph of Frags - GoF tool repository
-
-**_Molecular Graph Reduction algorithm for fragSMILES notation_**
+## Table of Contents
 
 [Introduction](#introduction)\
 [Installation](#installation)\
