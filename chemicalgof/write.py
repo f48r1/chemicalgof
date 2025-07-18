@@ -138,6 +138,10 @@ def RandomGoF2FragSMILES(DiG:DiGraphFrags):
     traverser = Traverser(DiG, canonize=False, casual=True)
     writer = Writer(DiG)
 
+    if DiG.number_of_nodes() == 1:
+        pathway=[Pathstep(node) for node in DiG._node]
+        return writer.write_fragsmiles(pathway)
+
     paths = traverser.find_paths()
     main_path = secure_random.choice ( paths )
     main_path = traverser.buildBranches(main_path)
@@ -148,6 +152,10 @@ def RandomGoF2FragSMILES(DiG:DiGraphFrags):
 def OrderedGoF2fragSMILES(DiG:DiGraphFrags):
     traverser = Traverser(DiG, canonize=False, casual=False)
     writer = Writer(DiG)
+
+    if DiG.number_of_nodes() == 1:
+        pathway=[Pathstep(node) for node in DiG._node]
+        return writer.write_fragsmiles(pathway)
 
     main_path = traverser.traverse_by_idx()
     main_path = traverser.buildBranches(main_path)

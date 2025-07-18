@@ -99,8 +99,10 @@ class Traverser:
         ## path composed of 1 node ... :)
         if not terminalNodes and source is not None:
             return [[Pathstep(source)]]
+        elif not terminalNodes and source is None and G.number_of_nodes==1: # XXX recent bug occurred : figure out if this should be here
+            return [[Pathstep(node) for node in G._node]]
         elif not terminalNodes and source is None:
-            return None # BUG rdkit does not recognize node !
+            return None # BUG rdkit does not recognize node (cause of SMARTS matching) !
 
         paths=[ list(nx.all_simple_paths(G, a,b))[0] for a,b in terminalNodesCouple ]
 
