@@ -1,5 +1,5 @@
-rdkit==2023.9.5
-# numpy==2.2.0
-pandas==2.2.3
 networkx==3.2.1
+numpy==2.2.0
+pandas==2.2.3
+rdkit==2023.9.5
 setuptools==78.1.0

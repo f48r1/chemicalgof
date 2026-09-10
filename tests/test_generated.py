@@ -1,21 +1,61 @@
 import pytest
-from chemicalgof import decode
-from rdkit import Chem
+from chemicalgof import decode, encode, split_fragsmiles
 
+def _extract_stereo_labels(sampled:list[str]):
+    stereo_elements :list[str] = []
+    for element in sampled:
+        if (
+            element.startswith('<') and ('R' in element.upper() or 'S' in element.upper())
+        ) or (
+            '|' in element
+        ):
+            stereo_elements.append(element)
+
+    return tuple(stereo_elements)
 
 @pytest.mark.parametrize(
     "sampled",
     [
-        # Canonization is required beacause RDKit assign chirality to sp2 catbon atoms
-        ['C', '<12R>', 'O=C1NCCCc2cccc(c2)CCCOCc2cccc1c2', '<20R>', '<16>', '(', 'C', ')', '<11R>', '(', '<6>', 'c1ccc2c(c1)CCC21CCNCC1', ')', '<22S>', '(', 'O', ')', 'O', 'C'],
 
+        [
+            "C",
+            "<12R>",
+            "O=C1NCCCc2cccc(c2)CCCOCc2cccc1c2",
+            "<20R>",
+            "<16>",
+            "(",
+            "C",
+            ")",
+            "<11R>",
+            "(",
+            "<6>",
+            "c1ccc2c(c1)CCC21CCNCC1",
+            ")",
+            "<22S>",
+            "(",
+            "O",
+            ")",
+            "O",
+            "C",
+        ],
     ],
     ids=[
-        "required_canonization",
-    ]
+        "required_unstricted_chirality",
+    ],
 )
 
 def test_decoding_sampled(sampled):
-    decoded = decode(sampled)
-    canonical = Chem.CanonSmiles(decoded)
-    assert decoded != canonical
+
+    with pytest.raises(Exception) as exception_info:
+        decoded_stricted = decode(sampled, strict_chirality=True)
+
+    assert "Invalid stereocenters provided" in str(exception_info.value)
+
+    decoded_unstricted = decode(sampled, strict_chirality=False)
+    reencoded = encode(decoded_unstricted)
+    reencoded_splitted = split_fragsmiles(reencoded)
+
+    requested_stereo_elements = _extract_stereo_labels(sampled)
+    actual_stereo_elements = _extract_stereo_labels(reencoded_splitted)
+
+    assert len(requested_stereo_elements) != len(actual_stereo_elements) or requested_stereo_elements != actual_stereo_elements

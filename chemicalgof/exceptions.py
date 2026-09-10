@@ -5,7 +5,32 @@ class ConnectorIndex(Exception):
     def __init__(self, fragsmiles:str, index:int):
         self.fragsmiles = fragsmiles
         self.index = index
-        self.message = f'Bond Error : Connecting atom index not specified for fragment: {self.fragsmiles} (index element #{self.index}).'
+
+        self.message = (
+            'Bond Error: ',
+            'Connecting atom index not specified for fragment ',
+            self.fragsmiles,
+            ' (index element #',
+            str(self.index),
+            ')',
+        )
+
+        super().__init__(self.message)
+
+class ExceededBonds(Exception):
+    def __init__(self, fragsmiles:str, index:int):
+        self.fragsmiles = fragsmiles
+        self.index = index
+
+        self.message = (
+            'Valence Error : '
+            'connections exceeded for atom index #',
+            str(self.index),
+            ' within fragment ',
+            self.fragsmiles,
+            '.',
+        )
+
         super().__init__(self.message)
 
 class InvalidChirality(Exception):

@@ -1,7 +1,8 @@
 from .reduce import Reduce2GoF
-from .write import GoF2fragSMILES
+from .write import GoF2fragSMILES, CanonicalGoF2fragSMILES
 from .explode import GoF2Mol
-from .parse import fragSMILES2GoF, Sequence2GoF, split
+from .parse import fragSMILES2GoF, Sequence2GoF, split_fragsmiles
+from .draw import drawGoF
 
 def encode(
     smiles:str,
@@ -20,7 +21,7 @@ def encode(
     Returns:
         str: fragSMILES representation. Then string can be splitted by function provided by this package.
     """
-    DiG = Reduce2GoF(smiles=smiles, capitalize_legacy=capitalize_chirality)
+    DiG = Reduce2GoF(smiles, capitalize_legacy=capitalize_chirality)
     fragsmiles = GoF2fragSMILES(DiG, canonize=canonical, random=random)
 
     return fragsmiles
@@ -48,3 +49,14 @@ def decode(
     smiles = Chem.MolToSmiles(mol)
     # smiles = Chem.CanonSmiles(smiles) # [x] Canonization is not preferred because of bug about chirality: it's still expected for aromatic and sp2 carbon atoms. If you canonize returned SMILES, sanification can be done on it!
     return smiles
+
+def split(fragsmiles:str) -> list[str]:
+    import warnings
+
+    warnings.warn(
+        "'split' function is deprecated: use 'split_fragsmiles' instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
+    return split_fragsmiles(fragsmiles)

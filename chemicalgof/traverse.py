@@ -1,25 +1,26 @@
 import itertools
 import numpy as np
 import networkx as nx
-from .gof import FragNode, DiGraphFrags, GraphFrags
+from .gof import FragNode, DiGraphFrags
 import random
 secure_random = random.SystemRandom()
 
 # NOTE This is like a pointer class of FragNode which has additional attributes to interact with branching paths
 class Pathstep:
     def __init__(self, frag_node:FragNode):
-        self.frag_node = frag_node # pointing to the node
+        self.node = frag_node # pointing to the node
+        self.fragment = frag_node.fragment
         self.branches: list[list[Pathstep]]=[]
 
     def __repr__(self):
         b=f"({len(self.branches)})" if self.branches else ""
-        return str(self.frag_node)+b
+        return str(self.node)+b
 
 
 class Traverser:
     def __init__(self, DiG: DiGraphFrags, canonize:bool = True, casual: bool | int = False):
         self.DiG = DiG
-        self.G = DiG.to_undirected()
+        self.UnG = DiG.to_undirected()
 
         self.canonize = canonize
         self.casual = casual
@@ -36,8 +37,9 @@ class Traverser:
         """
         s=[0 for _ in paths ]
         for steps in zip(*paths):
+            steps : list[Pathstep]
             for idx, step in enumerate(steps):
-                s[idx] += step.frag_node.typeId
+                s[idx] += step.fragment.typeId
             minimum = min(s)
             _min = [pos for pos,element in enumerate(s) if element==minimum]
             if len(_min)==1 :
@@ -57,7 +59,7 @@ class Traverser:
         s=[0 for _ in paths ]
         idxs=np.array(range(len(paths)))
         for steps in zip(*paths):
-            IDs=[step.frag_node.typeId for idx,step in enumerate(steps) if idx in idxs]
+            IDs=[step.fragment.typeId for idx,step in enumerate(steps) if idx in idxs]
 
             s = [a+b  for a,b in zip (s,IDs)]
             minimum = min(s)
@@ -79,15 +81,15 @@ class Traverser:
         Returns:
             list[list[int]]: _description_
         """
-        pathsFrags=[ tuple(str(step.frag_node.typeId) for step in path) for path in paths ]
+        pathsFrags=[ tuple(str(step.fragment.typeId) for step in path) for path in paths ]
         groups=[ sorted(np.where( (np.array(pathsFrags)==k).all(axis=1))[0] ) 
                 for k in set(pathsFrags) ]
         return groups
     
-    def find_paths(self, source: FragNode | None = None, subG:GraphFrags | None = None,) -> list[list[Pathstep]] :
-        G = self.G if subG is None else subG
+    def find_paths(self, source: FragNode | None = None, subG:nx.Graph | None = None,) -> list[list[Pathstep]] :
+        UnG = self.UnG if subG is None else subG
 
-        terminalNodes = [node for node in G._node if G.degree[node]==1 and node != source]
+        terminalNodes = [node for node in UnG._node if UnG.degree[node]==1 and node != source]
         # if the source of the path is not specified, all paths between terminal nodes are recognized
         if not source:
             terminalNodesCouple=[[(a,b),(b,a)] for a,b in itertools.combinations(terminalNodes,2)]
@@ -99,12 +101,12 @@ class Traverser:
         ## path composed of 1 node ... :)
         if not terminalNodes and source is not None:
             return [[Pathstep(source)]]
-        elif not terminalNodes and source is None and G.number_of_nodes==1: # XXX recent bug occurred : figure out if this should be here
-            return [[Pathstep(node) for node in G._node]]
+        elif not terminalNodes and source is None and UnG.number_of_nodes==1: # XXX recent bug occurred : figure out if this should be here
+            return [[Pathstep(node) for node in UnG._node]]
         elif not terminalNodes and source is None:
             return None # BUG rdkit does not recognize node (cause of SMARTS matching) !
 
-        paths=[ list(nx.all_simple_paths(G, a,b))[0] for a,b in terminalNodesCouple ]
+        paths=[ list(nx.all_simple_paths(UnG, a,b))[0] for a,b in terminalNodesCouple ]
 
         return [ [Pathstep(step) for step in path] for path in paths ]
     
@@ -125,21 +127,22 @@ class Traverser:
     def findFirstBranchIdx(self, path:list[Pathstep]) -> int | None:
         # NOTE we can ignore terminal nodes cause of they have just 1 deegree for sure.
         for i,step in enumerate(path[1:-1]):
-            node = step.frag_node
-            if self.G.degree[node]>2:
+            if self.UnG.degree[step.node]>2:
                 return i+1
         return np.nan ## it is linear.
     
     def traverse_by_idx(self, nodes:list[FragNode] | None = None, first_node:FragNode | None = None) -> list[Pathstep]:
 
+        graph_nodes = list(self.DiG._node)
+
         if nodes is None:
-            nodes = list(self.DiG._node)
+            nodes = graph_nodes
         else:
-            nodes.sort(key = lambda x: x.idx)
+            nodes.sort(key = lambda node: graph_nodes.index(node))
 
         if first_node is None:
             for node in nodes:
-                if self.G.degree[node]==1:
+                if self.UnG.degree[node]==1:
                     first_node = node
                     break
 
@@ -152,12 +155,12 @@ class Traverser:
             next_node = nodes[i]
             last_node = pathway[-1]
 
-            if next_node in self.G.neighbors(last_node):
+            if next_node in self.UnG.neighbors(last_node):
                 nodes.remove(next_node)
                 pathway.append(next_node)
                 i=0
 
-                if self.G.degree[next_node]==1:
+                if self.UnG.degree[next_node]==1:
                     break
             else:
                 i+=1
@@ -168,14 +171,16 @@ class Traverser:
 
     # Recursive function to build nested pathways
     def buildBranches(self, main_path:list[Pathstep], ascendent:FragNode | None = None) -> list[Pathstep]:
-        G = self.G
+        UnG = self.UnG
 
-        main_path_nodes = [step.frag_node for step in main_path]
+        main_path_nodes = [step.node for step in main_path]
 
         for step in main_path:
-            frag_node = step.frag_node
-            branching_initilizer_nodes: list[FragNode]=[neighbor for neighbor in G.neighbors(frag_node) 
-                    if neighbor not in main_path_nodes and neighbor!=ascendent]
+            frag_node = step.node
+            branching_initilizer_nodes: list[FragNode]=[
+                neighbor for neighbor in UnG.neighbors(frag_node) 
+                if neighbor not in main_path_nodes and neighbor!=ascendent
+            ]
             
             if not branching_initilizer_nodes:
                 continue
@@ -194,19 +199,19 @@ class Traverser:
 
         return main_path
     
-    def split_isolate_between(self, core:FragNode, source:FragNode) -> GraphFrags:
+    def split_isolate_between(self, core:FragNode, source:FragNode) -> nx.Graph:
         # NOTE core is the initializer node of branching path
-        subG=self.G.copy()
+        subG=self.UnG.copy()
         subG.remove_edge(core, source)
         toDel=[x for x in nx.connected_components(subG) if source not in x]
         subG.remove_nodes_from(*toDel)
         return subG # [x] we could return a subgraph but it's the same ...
 
     def getNumBranches(self, path, subG=None):
-        G = self.G if subG is None else subG
-        return sum([G.degree[step.frag_node]-2 for step in path if G.degree[step.frag_node]>2 ])
+        UnG = self.UnG if subG is None else subG
+        return sum([UnG.degree[step.node]-2 for step in path if UnG.degree[step.node]>2 ])
 
-    def findBranchPath(self, subG:GraphFrags, source:FragNode) -> list[Pathstep]:
+    def findBranchPath(self, subG:nx.Graph, source:FragNode) -> list[Pathstep]:
         if not self.canonize and not self.casual:
             return self.traverse_by_idx(list(subG._node), source)
         
@@ -242,7 +247,12 @@ class Traverser:
             idxSorted = list(range(len(paths)))
             secure_random.shuffle(idxSorted)
         elif not self.canonize and not self.casual:
-            idxSorted = [i[0] for i in sorted(enumerate(paths), key=lambda x:x[1][0].frag_node.idx)]
+            graph_nodes = list(self.DiG.nodes.keys())
+            idxSorted = [
+                idx_steps[0] for idx_steps in sorted(
+                    enumerate(paths), key=lambda x:graph_nodes.index(x[1][0].node)
+                )
+            ]
         # else:
         # it's gonna retrieving for canonical sorting of branching paths
 

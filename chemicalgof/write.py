@@ -10,16 +10,20 @@ class Writer:
         self.DiG = DiG
 
     def write_bond(self, source: FragNode, target: FragNode):
-        if source.numPotAtomLinkers <=1:
+        if source.fragment.num_connector <=1:
             return ''
         
         data_bond = self.DiG.get_edge_data(source, target)
 
-        # if data_bond['aB'] is None: # [ ] set None for the 'aB' node with 1 only linker ? Next versions maybe
+        # [ ] set None for the 'aB' node with 1 only linker ? Next versions maybe (from chemicalgof.reduce)
+        # if data_bond['aB'] is None:
             # return ''
 
         bond_str = str(data_bond['aB'])
-        if data_bond['stereo'] is not None : bond_str+=str(data_bond['stereo'])
+
+        stereo_str = data_bond.get('stereo')
+        if stereo_str is not None :
+            bond_str+=str(stereo_str)
 
         return f'<{bond_str}>'
 
@@ -27,24 +31,26 @@ class Writer:
 
         string = ''
         if ascendent_node is not None:
-            string += self.write_bond(path[0].frag_node, ascendent_node)
+            string += self.write_bond(path[0].node, ascendent_node)
 
         # NOTE since first node cant branching, its fragSMILES is written.
         # NOTE Same result if last node was written out of the cycle for
-        string += str(path[0].frag_node)
+
+        first_step = path[0]
+        string += first_step.fragment.fragsmiles
 
         for prec,succ in itertools.pairwise(path):
-            prec_node = prec.frag_node; succ_node = succ.frag_node
+            prec_node = prec.node; succ_node = succ.node
             string+=self.write_bond(prec_node, succ_node) + sep
 
             if prec.branches:
                 for branching in prec.branches:
-                    string+=self.write_bond(prec_node, branching[0].frag_node) + '('
+                    string+=self.write_bond(prec_node, branching[0].node) + '('
                     # [ ] do we need seriusly to add sep before closing bracket ?? It is just because of re.findall (tokenization rule)
                     string+=self.write_fragsmiles(branching, ascendent_node=prec_node) + sep + ')' + sep
 
             string+=self.write_bond(succ_node, prec_node)
-            string += str(succ_node)
+            string += succ.fragment.fragsmiles
 
         return string
     
@@ -82,8 +88,8 @@ def CanonicalGoF2fragSMILES(DiG:DiGraphFrags) -> str | None: # NOTE None is for 
 
 
     branchesAmount = [ 
-                        np.array([traverser.G.degree[step.frag_node]-2
-                        for step in path if traverser.G.degree[step.frag_node]>2]) 
+                        np.array([traverser.UnG.degree[step.node]-2
+                        for step in path if traverser.UnG.degree[step.node]>2]) 
                         for path in longests
                     ]
 

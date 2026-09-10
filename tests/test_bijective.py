@@ -1,13 +1,5 @@
 import pytest
 from chemicalgof import encode, decode
-from rdkit import Chem
-
-
-def _fast_check(smiles: str) -> str:
-    fragsmiles = encode(smiles)
-    decoded = decode(fragsmiles, strict_chirality=True)
-    return Chem.CanonSmiles(decoded)
-
 
 @pytest.mark.parametrize(
     "smiles",
@@ -27,6 +19,8 @@ def _fast_check(smiles: str) -> str:
         "double_pseudo_chirality"
     ]
 )
+
 def test_bijective_smiles(smiles):
-    decoded = _fast_check(smiles)
-    assert smiles == decoded
+    fragsmiles = encode(smiles)
+    recomposed_smiles = decode(fragsmiles, strict_chirality=True)
+    assert smiles == recomposed_smiles

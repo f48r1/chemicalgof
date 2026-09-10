@@ -5,23 +5,26 @@
     <img src="./data/intro_chemicalgof.svg" width="100%">
 </div>
 
-![python version](https://img.shields.io/badge/python-3.10_|_3.11-white)
-![license](https://img.shields.io/badge/license-MIT-orange)
-[![Static Badge](https://img.shields.io/badge/ChemRxiv-10.26434/chemrxiv--2024-tm7n6)](https://doi.org/10.26434/chemrxiv-2024-tm7n6)
-[![Static Badge](https://img.shields.io/badge/Data%20Zenodo-_10.5281/12700298-blue)](https://doi.org/10.5281/zenodo.12700298)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Nature](https://img.shields.io/badge/Nature-4C9BD6.svg?logo=nature&logoColor=white)](https://www.nature.com/)
+[![Zenodo](https://img.shields.io/badge/Zenodo-1682D4.svg?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.12700298)
+[![Python](https://img.shields.io/badge/Python-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![RDKit](https://img.shields.io/badge/RDKit-chemistry-3F7E9C.svg)](https://www.rdkit.org/)
+[![NetworkX](https://img.shields.io/badge/NetworkX-graph-orange.svg)](https://networkx.org/)
 
-> **_NOTE:_**  This package has been refactored and the current version is 0.2.0; Many functions and command series were changed. Deprecated warnings are not implemented yet.
+> **_NOTE:_**  This package has been refactored and the current version is 0.3.0; Deprecated warnings are implemented.
 
-## Table of Contents
+- [Introduction](#introduction)
+- [🔧 Installation](#-installation)
+  - [1. (Optional but recommended) Create a virtual environment](#1-optional-but-recommended-create-a-virtual-environment)
+    - [🔹 Using Python `venv`](#-using-python-venv)
+    - [🔹 Using Conda](#-using-conda)
+  - [2a. 🔨 Install from source using `setup.py`](#2a--install-from-source-using-setuppy)
+  - [2b. 📦 Install directly via `pip`](#2b--install-directly-via-pip)
+- [How to use](#how-to-use)
+  - [Reference](#reference)
 
-[Introduction](#introduction)\
-[Installation](#installation)\
-[How to use](#how-to-use)\
-[Reference](#reference)
-
----
-
-## Introduction
+# Introduction
 
 Welcome to the `chemicalgof` repository! Graph of Frag (GoF) tool is designed to provide the graph reduction process to convert molecules atom-based to the fragment-based one !
 Our tool allows to set a custom-user rule for fragment molecules. By default, our fragmentation rule lead to the so called fragSMILES notation.
@@ -30,9 +33,9 @@ To do this, you need python interpreter ... and of course your molecules :)
 
 ---
 
-## 🔧 Installation
+# 🔧 Installation
 
-### 1. (Optional but recommended) Create a virtual environment
+## 1. (Optional but recommended) Create a virtual environment
 
 Using a virtual environment is good practice to isolate dependencies.  
 You can use either standard Python tools or Conda, depending on your operating system.
@@ -40,15 +43,14 @@ You can use either standard Python tools or Conda, depending on your operating s
 - **For Linux users**: the native Python environment is usually sufficient.  
 - **For Windows and macOS users**: we recommend using [Anaconda](https://www.anaconda.com/) for better compatibility.
 
-
-#### 🔹 Using Python `venv`
+### 🔹 Using Python `venv`
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
-#### 🔹 Using Conda
+### 🔹 Using Conda
 
 > ⚠️ In the examples below, `gof` is just a placeholder name for your environment—you can choose any name.
 
@@ -59,7 +61,7 @@ conda activate gof
 
 ---
 
-### 2a. 🔨 Install from source using `setup.py`
+## 2a. 🔨 Install from source using `setup.py`
 
 1. Clone the repository to a desired directory (e.g., your home folder):
 
@@ -81,7 +83,7 @@ conda activate gof
 
 ---
 
-### 2b. 📦 Install directly via `pip`
+## 2b. 📦 Install directly via `pip`
 
 If you prefer a simpler installation, you can install the package directly from GitHub:
 
@@ -89,19 +91,22 @@ If you prefer a simpler installation, you can install the package directly from 
 pip install git+https://github.com/f48r1/chemicalgof.git
 ```
 
-
-## How to use
+# How to use
 
 ```python
 from chemicalgof import encode
 
-## Example SMILES string of a molecule
-smiles = 'C[C@@](O)(Cl)C(=O)NC[C@@H]1CC[C@H](C(=O)O)O1' ## molecule provides chirality information
+## Example SMILES string of a molecule providing chirality information
+smiles = 'C[C@@](O)(Cl)C(=O)NC[C@@H]1CC[C@H](C(=O)O)O1'
 
 ## Convert SMILES into relative fragSMILES !
 fragsmiles = encode(smiles)
 
 print(fragsmiles)
+```
+
+```text
+'C.C|R.(O.).(Cl.).C=O.N.C.<4S>C1CCOC1<2R>.C=O.O'
 ```
 
 Then, to parse a fragSMILES representation, if valid, and convert it into a molecule
@@ -112,8 +117,41 @@ from chemicalgof import decode
 ret_smiles = decode(fragsmiles)
 
 # and finally SMILES
-print(ret_smiles)
+print(ret_smiles == smiles)
 ```
+
+```text
+True
+```
+
+The resulted fragSMILES representation is suitable for a fragment-level tokenization to be employed for Chemical Language Models (CLMs) feeding
+
+```python
+from chemicalgof import split_fragsmiles
+
+sequence = split_fragsmiles(fragsmiles)
+
+# and finally SMILES
+print(sequence)
+```
+
+```text
+['C', 'C|R', '(', 'O', ')', '(', 'Cl', ')', 'C=O', 'N', 'C', '<4S>', 'C1CCOC1', '<2R>', 'C=O', 'O']
+```
+
+The molecular fragment-based graph (GoF) can be also visualized/represented
+
+```python
+from chemicalgof import Reduce2GoF, drawGoF
+
+gof = Reduce2GoF(smiles)
+
+drawGoF(gof, random_seed=0, vert_or_horiz='horiz')
+```
+
+<div align="center">
+   <img src="./data/gof_example.svg" width="75%">
+</div>
 
 Additional detailed examples on how to encode smiles/molecules into fragsmiles are available in [notebook folder](./notebooks/).
 
@@ -121,23 +159,55 @@ Additional detailed examples on how to encode smiles/molecules into fragsmiles a
 
 ## Reference
 
-GoF tool was first presented on the preprint paper [here](https://doi.org/10.26434/chemrxiv-2024-tm7n6) and on the actual paper [here](https://www.nature.com/articles/s42004-025-01423-3).
-The resulting fragSMILES notation was used for de novo drug design approaches and compared with traditional notations such as SMILES, SELFIES and t-SMILES.
-
 If you think that GoF can be usefull for your project, please cite us :)
+
+GoF tool was first presented on this [scientific work](https://www.nature.com/articles/s42004-025-01423-3).
+The resulting fragSMILES notation was used for de novo drug design approaches and compared with traditional notations such as SMILES, SELFIES and t-SMILES.
 
 ```bibtex
 @article{mastrolorito_fragsmiles_2025,
-title = {{fragSMILES} as a chemical string notation for advanced fragment and chirality representation},
-volume = {8},
-issn = {2399-3669},
-url = {https://doi.org/10.1038/s42004-025-01423-3},
-doi = {10.1038/s42004-025-01423-3},
-number = {1},
-journal = {Communications Chemistry},
-author = {Mastrolorito, Fabrizio and Ciriaco, Fulvio and Togo, Maria Vittoria and Gambacorta, Nicola and Trisciuzzi, Daniela and Altomare, Cosimo Damiano and Amoroso, Nicola and Grisoni, Francesca and Nicolotti, Orazio},
-month = jan,
-year = {2025},
-pages = {26},
+   title = {{fragSMILES} as a chemical string notation for advanced fragment and chirality representation},
+   volume = {8},
+   issn = {2399-3669},
+   url = {https://doi.org/10.1038/s42004-025-01423-3},
+   doi = {10.1038/s42004-025-01423-3},
+   number = {1},
+   journal = {Communications Chemistry},
+   author = {
+      Mastrolorito, Fabrizio and
+      Ciriaco, Fulvio and
+      Togo, Maria Vittoria and
+      Gambacorta, Nicola and
+      Trisciuzzi, Daniela and
+      Altomare, Cosimo Damiano and
+      Amoroso, Nicola and
+      Grisoni, Francesca and
+      Nicolotti, Orazio
+   },
+   month = jan,
+   year = {2025},
+   pages = {26},
+}
+```
+
+It was subsequently used for chemical reaction prediction tasks here as well in this [scientific work](https://pubs.rsc.org/cc/article/61/93/18344/882864).
+
+```bibtex
+@article{mastrolorito_deeprxn_2025,
+   title = {Enhancing deep chemical reaction prediction with advanced chirality and fragment representation},
+   volume = {61},
+   url = {https://doi.org/10.1039/d5cc02641e},
+   doi = {10.1039/d5cc02641e},
+   number = {93},
+   journal = {Chem. Commun.},
+   publisher = {The Royal Society of Chemistry},
+   author = {
+      Mastrolorito, Fabrizio and
+      Ciriaco, Fulvio and
+      Nicolotti, Orazio and
+      Grisoni, Francesca
+   },
+   year = {2025},
+   pages = {18344--18347},
 }
 ```
