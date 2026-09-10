@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chemicalgof"
-version = "0.3.0"
+version = "0.3.0.dev0"
 description = "fragSMILES, fragment-based chemical notation from graph reduction process."
 readme = "README.md"
 requires-python = ">=3.13"
