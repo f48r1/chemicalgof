@@ -1,5 +1,5 @@
 from ..gof import DiGraphFrags, FragNode
-from .layout_claude import force_layout # FIXME
+from .layout import force_layout
 from .nodes import drawNode
 
 def _rect_border_point(center, size, direction):

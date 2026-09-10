@@ -277,35 +277,3 @@ def _resolve_overlaps(nodes, pos, sizes, padding, passes=10):
                     moved = True
         if not moved:
             break
-
-
-# ---------------------------------------------------------------------------
-# Quick demo
-# ---------------------------------------------------------------------------
-
-if __name__ == "__main__":
-    import networkx as nx
-
-    rng = random.Random(42)
-
-    G = nx.barabasi_albert_graph(20, 2, seed=42)
-    sizes = {n: (rng.randint(60, 160), rng.randint(30, 80)) for n in G.nodes()}
-
-    positions = force_layout(G, sizes, iterations=400, seed=42)
-
-    print("Node positions (centres):")
-    for node, (x, y) in sorted(positions.items()):
-        w, h = sizes[node]
-        print(f"  node {node:2d}: centre=({x:7.1f}, {y:7.1f})  size=({w}×{h})")
-
-    # Basic overlap check
-    nodes = list(G.nodes())
-    overlaps = 0
-    for i, u in enumerate(nodes):
-        for v in nodes[i + 1:]:
-            ux, uy = positions[u]; uw, uh = sizes[u]
-            vx, vy = positions[v]; vw, vh = sizes[v]
-            if (abs(ux - vx) < (uw + vw) / 2 and
-                    abs(uy - vy) < (uh + vh) / 2):
-                overlaps += 1
-    print(f"\nOverlapping pairs after layout: {overlaps}")

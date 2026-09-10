@@ -12,4 +12,6 @@ __pycache__/
 *.code-workspace
 
 # Additional dev testing files
-*bkp*
+*-dev*
+*.egg-info
+dist/

@@ -47,7 +47,7 @@ def decode(
 
     mol = GoF2Mol(DiG, strict_chirality=strict_chirality)
     smiles = Chem.MolToSmiles(mol)
-    # smiles = Chem.CanonSmiles(smiles) # [x] Canonization is not preferred because of bug about chirality: it's still expected for aromatic and sp2 carbon atoms. If you canonize returned SMILES, sanification can be done on it!
+
     return smiles
 
 def split(fragsmiles:str) -> list[str]:
