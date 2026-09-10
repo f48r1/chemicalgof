@@ -2,7 +2,8 @@ name: Graph of Frags
 
 on:
   push:
-    branches: ["master", "0.3.0-dev"]
+    branches: ["master"]
+    tags: ["0.3.0"]
   pull_request:
     branches: ["master"]
 
