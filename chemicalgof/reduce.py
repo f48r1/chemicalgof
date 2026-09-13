@@ -7,9 +7,6 @@ RDLogger.DisableLog('rdApp.*')
 
 import warnings
 
-# FIXME
-# from rdkit.Chem import rdCIPLabeler
-
 class Decompositer:
     # default cleavage pattern. exocyclic single bonds but not beetween charged atoms 
     SINGLEXOCYCLICPATT = '[!$([+1,-1]~[-1,+1])]-&!@[*]'
@@ -84,7 +81,7 @@ class Decompositer:
         nodes_attributes:list[dict[int,str]] = [] # only chirality attributes. str is R or S linked to atom idx
 
         for s,mapMol2Frag, mapFrag2Mol in zip(frag_smiles, self.mapsMol2Frag, self.mapsFrag2Mol) :
-            # TODO I still dont like to put this here but it's mandatory.
+            # FIXME I still dont like to put this here but it's mandatory.
             single_connecting_atom = sum([
                 atom.GetTotalNumHs()>0
                 for atom in Chem.MolFromSmiles(s).GetAtoms()
@@ -157,7 +154,8 @@ def Reduce2GoF(
     bondMatches:tuple[tuple[int,int]] = mol.GetSubstructMatches( obj.cleavage_pattern )
 
     # optical stereochemical data
-    allChiralAtoms = FindProperStereoCenters(mol)
+    # FIXME warning always False ?
+    allChiralAtoms = FindProperStereoCenters(mol, warning=False)
 
     if capitalize_legacy and allChiralAtoms:
         allChiralAtoms = {atom_idx: cip_label.upper() for atom_idx,cip_label in allChiralAtoms.items()}

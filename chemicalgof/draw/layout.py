@@ -1,24 +1,10 @@
-"""
-Force-directed layout algorithm for rectangle-shaped graph nodes.
-
-Handles:
-- Rectangle-aware repulsion (uses actual bounding boxes, not just centers)
-- Spring attraction along edges (anchored to node borders, not centers)
-- Overlap elimination via strong short-range repulsion
-- Adaptive cooling for convergence
-- Efficient spatial indexing with a grid for O(n log n) repulsion
-"""
+# [ ] latest update module: any improvements ?
 
 import math
 import random
 from collections.abc import Callable
 
 import networkx as nx
-
-
-# ---------------------------------------------------------------------------
-# Public API
-# ---------------------------------------------------------------------------
 
 def force_layout(
     graph: nx.Graph,

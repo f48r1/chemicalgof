@@ -1,5 +1,3 @@
-# [ ] A few exceptions could be developed to replace ValueError in other files.
-
 class ConnectorIndex(Exception):
      
     def __init__(self, fragsmiles:str, index:int):
@@ -31,6 +29,17 @@ class ExceededBonds(Exception):
             '.',
         )
 
+        super().__init__(self.message)
+
+class CollidedMultiChirality(Exception):
+     
+    def __init__(self, atom_symbol:str | None = None, index:int | None = None):
+        self.atom_symbol = atom_symbol
+        self.index = index
+        if atom_symbol is not None and index is not None:
+            self.message = f'Chirality Error : Multi different chirality label for atom {self.atom_symbol} #{self.index}'
+        else:
+            self.message = f'Chirality Error :Multi different chirality label recognized.'
         super().__init__(self.message)
 
 class InvalidChirality(Exception):

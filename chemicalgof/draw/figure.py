@@ -36,7 +36,6 @@ def drawGoF(
 
     node_size = {node:img.size for node,img in node_image.items()}
 
-    # positions = force_layout(gof, node_size, max_force=200) # FIXME
     if custom_positions is not None:
         positions = custom_positions
     else:

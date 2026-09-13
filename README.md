@@ -5,24 +5,26 @@
     <img src="./data/intro_chemicalgof.svg" width="100%">
 </div>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Nature](https://img.shields.io/badge/Nature-4C9BD6.svg?logo=nature&logoColor=white)](https://www.nature.com/)
-[![Zenodo](https://img.shields.io/badge/Zenodo-1682D4.svg?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.12700298)
-[![Python](https://img.shields.io/badge/Python-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![RDKit](https://img.shields.io/badge/RDKit-chemistry-3F7E9C.svg)](https://www.rdkit.org/)
-[![NetworkX](https://img.shields.io/badge/NetworkX-graph-orange.svg)](https://networkx.org/)
+[![CI](https://github.com/f48r1/chemicalgof/actions/workflows/python-package.yml/badge.svg)](https://github.com/f48r1/chemicalgof/actions/workflows/python-package.yml)
+<!-- [![PyPI](https://img.shields.io/pypi/v/chemicalgof?logo=pypi&logoColor=white&color=3775A9)](https://pypi.org/project/chemicalgof/) -->
+[![Python](https://img.shields.io/badge/Python-%E2%89%A53.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-2ea44f?logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
+[![Zenodo](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.12700298-1682D4?logo=zenodo&logoColor=white)](https://doi.org/10.5281/zenodo.12700298)
+[![RDKit](https://img.shields.io/badge/RDKit-chemistry-3F7E9C)](https://www.rdkit.org/)
+[![NetworkX](https://img.shields.io/badge/NetworkX-graphs-orange)](https://networkx.org/)
 
-> **_NOTE:_**  This package has been refactored and the current version is 0.3.0; Deprecated warnings are implemented.
+> **_NOTE:_**  This package has been refactored and the current version is 0.3.0.dev; Deprecated warnings are implemented.
 
 - [Introduction](#introduction)
 - [🔧 Installation](#-installation)
   - [1. (Optional but recommended) Create a virtual environment](#1-optional-but-recommended-create-a-virtual-environment)
     - [🔹 Using Python `venv`](#-using-python-venv)
     - [🔹 Using Conda](#-using-conda)
-  - [2a. 🔨 Install from source using `setup.py`](#2a--install-from-source-using-setuppy)
+  - [2a. 🔨 Install from source](#2a--install-from-source)
   - [2b. 📦 Install directly via `pip`](#2b--install-directly-via-pip)
 - [How to use](#how-to-use)
-  - [Reference](#reference)
+- [Notebooks](#notebooks)
+- [Reference](#reference)
 
 # Introduction
 
@@ -55,18 +57,18 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 > ⚠️ In the examples below, `gof` is just a placeholder name for your environment—you can choose any name.
 
 ```bash
-conda create --name gof python=3.11
+conda create --name gof python=3.13
 conda activate gof
 ```
 
 ---
 
-## 2a. 🔨 Install from source using `setup.py`
+## 2a. 🔨 Install from source
 
 1. Clone the repository to a desired directory (e.g., your home folder):
 
    ```bash
-   git clone https://github.com/f48r1/chemicalgof.git
+   git clone --branch 0.3.0 https://github.com/f48r1/chemicalgof.git
    ```
 
 2. Navigate to the project directory:
@@ -78,7 +80,7 @@ conda activate gof
 3. Install the package locally:
 
    ```bash
-   python setup.py install
+   python -m pip install .
    ```
 
 ---
@@ -88,7 +90,7 @@ conda activate gof
 If you prefer a simpler installation, you can install the package directly from GitHub:
 
 ```bash
-pip install git+https://github.com/f48r1/chemicalgof.git
+pip install "git+https://github.com/f48r1/chemicalgof.git@0.3.0"
 ```
 
 # How to use
@@ -109,7 +111,7 @@ print(fragsmiles)
 'C.C|R.(O.).(Cl.).C=O.N.C.<4S>C1CCOC1<2R>.C=O.O'
 ```
 
-Then, to parse a fragSMILES representation, if valid, and convert it into a molecule
+Then, to parse a fragSMILES representation, if valid, and convert it into the relative SMILES
 
 ```python
 from chemicalgof import decode
@@ -153,11 +155,27 @@ drawGoF(gof, random_seed=0, vert_or_horiz='horiz')
    <img src="./data/gof_example.svg" width="75%">
 </div>
 
-Additional detailed examples on how to encode smiles/molecules into fragsmiles are available in [notebook folder](./notebooks/).
+---
+
+# Notebooks
+
+The [`notebooks/`](./notebooks/) directory contains interactive examples and additional experiments illustrating how to work with **chemicalgof** and the **fragSMILES** representation.
+
+The notebooks cover different aspects of the workflow:
+
+- [`01_conversion_examples.ipynb`](./notebooks/01_conversion_examples.ipynb) — introductory examples showing how molecules and SMILES can be converted into **fragSMILES** representations using the reduction process (**reduced graph**) and how augmentation process works.
+- [`02_decode_sampled_examples.ipynb`](./notebooks/02_decode_sampled_examples.ipynb) — examples showing how to prepare fragSMILES data as input for a Chemical Language Model (CLM) and how to decode selected generated fragSMILES samples back into SMILES representations.
+- [`03_some_warnings.ipynb`](./notebooks/03_some_warnings.ipynb) — examples involving large molecules where the conversion process may produce warnings.
+- `test_all_data_multiprocessing.ipynb` — development notebook used to test the conversion workflow on the [provided dataset](./data/test.csv) with multiprocessing and to verify the correct bijectivity of `chemicalgof`.
+- `notebook_utils.py` — shared utility functions used by the notebooks.
+
+The notebooks are intended both as examples for interesting users and as a practical reference for exploring the fragSMILES encoding/decoding workflow.
+
+For a quick introduction, start with [**`01_conversion_examples.ipynb`**](./notebooks/01_conversion_examples.ipynb).
 
 ---
 
-## Reference
+# Reference
 
 If you think that GoF can be usefull for your project, please cite us :)
 

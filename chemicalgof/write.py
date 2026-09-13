@@ -46,7 +46,8 @@ class Writer:
             if prec.branches:
                 for branching in prec.branches:
                     string+=self.write_bond(prec_node, branching[0].node) + '('
-                    # [ ] do we need seriusly to add sep before closing bracket ?? It is just because of re.findall (tokenization rule)
+                    # [ ] do we need seriusly to add sep before closing bracket ??
+                    # It is just because of re.findall (tokenization rule)
                     string+=self.write_fragsmiles(branching, ascendent_node=prec_node) + sep + ')' + sep
 
             string+=self.write_bond(succ_node, prec_node)

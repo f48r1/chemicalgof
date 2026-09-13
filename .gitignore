@@ -10,8 +10,9 @@ __pycache__/
 
 # VS Workspace
 *.code-workspace
+.vscode
 
 # Additional dev testing files
-*-dev*
+**/*-dev*
 *.egg-info
 dist/

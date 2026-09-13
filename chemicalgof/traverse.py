@@ -101,10 +101,14 @@ class Traverser:
         ## path composed of 1 node ... :)
         if not terminalNodes and source is not None:
             return [[Pathstep(source)]]
-        elif not terminalNodes and source is None and UnG.number_of_nodes==1: # XXX recent bug occurred : figure out if this should be here
+        
+        # XXX bug occurred one time ... figure out if this should be here
+        elif not terminalNodes and source is None and UnG.number_of_nodes==1:
             return [[Pathstep(node) for node in UnG._node]]
+
+        # BUG rdkit does not recognize separated fragments/node (cause of SMARTS matching) !
         elif not terminalNodes and source is None:
-            return None # BUG rdkit does not recognize node (cause of SMARTS matching) !
+            return None
 
         paths=[ list(nx.all_simple_paths(UnG, a,b))[0] for a,b in terminalNodesCouple ]
 
@@ -205,7 +209,8 @@ class Traverser:
         subG.remove_edge(core, source)
         toDel=[x for x in nx.connected_components(subG) if source not in x]
         subG.remove_nodes_from(*toDel)
-        return subG # [x] we could return a subgraph but it's the same ...
+
+        return subG
 
     def getNumBranches(self, path, subG=None):
         UnG = self.UnG if subG is None else subG

@@ -1,9 +1,4 @@
 from rdkit import Chem
-import warnings
-
-LEGACY_LABEL_IS_CORRECT = True
-
-# [ ] something to do here ?
 
 def GetPotAtomLinkers(s):
     if "|" in s: # if fragment has chirality
@@ -51,11 +46,16 @@ def CanonizeFragWithDummies(m1):
     return m3, tmp
 
 
+# XXX if stereo labels from 'with_legacy' collide with 'without_legacy' for a given atom
+# label from 'with_legacy' is employed when LEGACY_LABEL_IS_CORRECT = True, otherwise...
+LEGACY_LABEL_IS_CORRECT = False
 def FindProperStereoCenters(mol:Chem.Mol, warning=True) -> dict[int, str]:
+
+    import warnings
 
     with_legacy : dict[int,str] = dict( Chem.FindMolChiralCenters(mol, useLegacyImplementation=True ) )
 
-    # XXX NOTE useLegacyImplementation=False -> r,s CipLabel also included
+    # NOTE useLegacyImplementation=False -> r,s CipLabel also included
     try:
         without_legacy : dict[int,str] = dict( Chem.FindMolChiralCenters(mol, useLegacyImplementation=False ) )
     except Exception as e:
@@ -65,9 +65,9 @@ def FindProperStereoCenters(mol:Chem.Mol, warning=True) -> dict[int, str]:
         )
         without_legacy = {}
 
-    # NOTE this order matters: without_legacy will replace psuedo chirality (r or s)
     if without_legacy and with_legacy:
 
+        # NOTE sometimes some stereo labels from 'with_legacy' collide with 'without_legacy' for a given atom
         corrupted_cip_labels = {}
 
         for atom_idx in tuple(with_legacy.keys()):
@@ -85,8 +85,8 @@ def FindProperStereoCenters(mol:Chem.Mol, warning=True) -> dict[int, str]:
         elif not warning:
             if LEGACY_LABEL_IS_CORRECT:
                 return without_legacy | corrupted_cip_labels
-            else:
-                return without_legacy
+
+            return without_legacy
 
         warning_msg = '\n' + 'Opposite CIP labels from different Legacy implementations.' + '\n' + 'CIP labels '
         if LEGACY_LABEL_IS_CORRECT:
@@ -99,7 +99,7 @@ def FindProperStereoCenters(mol:Chem.Mol, warning=True) -> dict[int, str]:
 
         corrupted_cip_labels.clear()
 
-        warning_msg += 'were employed:' + '\n' + labels_str
+        warning_msg += 'were employed: ' + labels_str
         warnings.warn(warning_msg)
 
         return without_legacy

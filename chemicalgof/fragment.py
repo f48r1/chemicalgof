@@ -68,7 +68,6 @@ class Fragment:
 
         symm_dict = {}
 
-        # BUG includeChirality=False but sometimes molecular rotation has still symmetry
         for atom_idx, order in enumerate(Chem.CanonicalRankAtoms(self.mol, breakTies=False, includeChirality=False)):
 
             if atom_idx not in self.connector_idxs:
@@ -99,7 +98,8 @@ class Fragment:
     @cached_property
     def typeId(self):
 
-        # FIXME
+        # FIXME by including stereo or not ?
+        
         # NOTE string representation by not including stereochemistry ...
         string = self.smiles
 
