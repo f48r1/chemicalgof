@@ -49,7 +49,7 @@ def test_decoding_sampled(sampled):
     with pytest.raises(Exception) as exception_info:
         decoded_stricted = decode(sampled, strict_chirality=True)
 
-    assert "Invalid stereocenters provided" in str(exception_info.value)
+    assert "Chirality Error" in str(exception_info.value)
 
     decoded_unstricted = decode(sampled, strict_chirality=False)
     reencoded = encode(decoded_unstricted)
